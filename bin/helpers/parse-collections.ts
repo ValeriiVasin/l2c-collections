@@ -29,17 +29,48 @@ function parseCollectionItem(item: Element): CollectionItem {
     if (Number.isNaN(id)) {
       continue;
     }
+    const item: EnchantedItem = { id };
 
-    const enchantNode = link.querySelector('.enchant');
-
-    if (!enchantNode || !enchantNode.textContent) {
-      result.push({ id });
-      continue;
+    const enchant = parseEnchant(link);
+    if (enchant) {
+      item.enchant = enchant;
     }
 
-    const enchant = Number(enchantNode.textContent.replace(/\D/g, ''));
-    result.push({ id, enchant });
+    const count = parseCount(link);
+    if (count && count > 1) {
+      item.count = count;
+    }
+
+    result.push(item);
   }
 
   return result.length === 1 ? result[0] : result;
+}
+
+function parseEnchant(link: HTMLAnchorElement): number | undefined {
+  const enchantNode = link.querySelector('.enchant');
+
+  if (!enchantNode || !enchantNode.textContent) {
+    return;
+  }
+
+  return Number(enchantNode.textContent.replace(/\D/g, ''));
+}
+
+function parseCount(link: HTMLAnchorElement): number | undefined {
+  // top-level node or the one inside
+  const nodes = [link, link.querySelector('[data-count]')];
+
+  for (const nodeWithCount of nodes) {
+    if (!nodeWithCount) {
+      continue;
+    }
+
+    const countAttrValue = nodeWithCount.getAttribute('data-count');
+    if (!countAttrValue) {
+      continue;
+    }
+
+    return Number(countAttrValue);
+  }
 }

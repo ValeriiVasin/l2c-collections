@@ -5,6 +5,7 @@ import { Collection } from '../../types';
 import { parseCollections } from './parse-collections';
 
 const mainCollectionsPage = fs.readFileSync(path.resolve(__dirname, './fixtures/main-collections-page.html'), 'utf8');
+const utilityCollectionsPage =fs.readFileSync(path.resolve(__dirname, './fixtures/utility-collections-page.html'), 'utf8');
 
 describe('parse collections', () => {
   test('parses correct amount of collections', () => {
@@ -19,5 +20,15 @@ describe('parse collections', () => {
     };
 
     expect(parseCollections(mainCollectionsPage)).toContainEqual(collection)
+  });
+
+  test('contains collection with the count more than 1', () => {
+    const collection: Collection = {
+      name: 'Коллекция Рун Развития I',
+      items: [{ id: 94781 }, {id: 94781}, {id: 94781}, {id: 94780, count: 5}, {id: 94780}],
+      effects: 'Бонус опыта и SP +1%',
+    };
+
+    expect(parseCollections(utilityCollectionsPage)).toContainEqual(collection)
   });
 });
