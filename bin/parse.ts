@@ -8,7 +8,7 @@ const itemsFile = path.resolve(__dirname, '../data/items.json');
 const collectionsFile = path.resolve(__dirname, '../data/collections.json');
 
 async function main() {
-  const urls = pagedUrls('https://l2central.info/classic/items/collections/', 2);
+  const urls = pagedUrls('https://l2central.info/classic/items/collections/', 15);
   const resultCollections: Collection[] = [];
   const resultItems: Map<number, Item> = new Map();
 
@@ -18,8 +18,8 @@ async function main() {
     mergeMap(resultItems, items);
   }
 
-  const itemsContent: string = JSON.stringify(Object.fromEntries(resultItems.entries()), null, 2);
-  const collectionsContent: string = JSON.stringify(resultCollections, null, 2);
+  const itemsContent: string = JSON.stringify(Array.from(resultItems.values()));
+  const collectionsContent: string = JSON.stringify(resultCollections);
 
   fs.writeFileSync(itemsFile, itemsContent, 'utf-8');
   fs.writeFileSync(collectionsFile, collectionsContent, 'utf-8');
