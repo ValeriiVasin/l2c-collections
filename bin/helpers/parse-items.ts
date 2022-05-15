@@ -1,4 +1,5 @@
 import { JSDOM } from 'jsdom';
+import { parseItemId } from './parse-item-id';
 
 const regexp = /\/items\/(?<id>\d+)\.html$/;
 export function parseItems(content: string): Set<number> {
@@ -6,14 +7,13 @@ export function parseItems(content: string): Set<number> {
   const items = new Set<number>();
 
   for (const link of document.querySelectorAll('a')) {
-      const href = link.href;
-      const match = href.match(regexp)
+    const id = parseItemId(link.href);
 
-      if (!match || !match.groups || !match.groups.id) {
-          continue;
-      }
+    if (Number.isNaN(id)) {
+      continue;
+    }
 
-      items.add(Number(match.groups.id));
+    items.add(id);
   }
 
   return items;
