@@ -1,3 +1,9 @@
+export interface Item {
+  id: number;
+  name: string;
+  sealed?: boolean;
+}
+
 export interface EnchantedItem {
   id: number;
   enchant?: number;
