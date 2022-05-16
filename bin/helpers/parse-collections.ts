@@ -1,12 +1,12 @@
 import { JSDOM } from 'jsdom';
-import { Collection, CollectionItem, EnchantedItem } from '../../types';
+import type { Collection, CollectionItem, EnchantedItem } from '../../types';
 import { parseItemId } from './parse-item-id';
 
 export function parseCollections(content: string): Array<Collection> {
   const { document } = new JSDOM(content).window;
   const rows = [...document.querySelectorAll('.collections-list .list-row:not(.head-row)')];
 
-  return rows.map(row => {
+  return rows.map((row) => {
     const name = row.querySelector('.name-col')?.textContent ?? '';
     const effects = row.querySelector('.effect-col')?.textContent ?? '';
     const items = row.querySelectorAll('.items-col .item:not(.empty)');
@@ -15,7 +15,7 @@ export function parseCollections(content: string): Array<Collection> {
       name,
       items: [...items].map(parseCollectionItem),
       effects,
-    }
+    };
   });
 }
 

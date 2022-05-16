@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { Collection, Item } from '../types';
+import type { Collection, Item } from '../types';
 import { pagedUrls } from './helpers/paged-urls';
 import { parseCollectionsPage } from './helpers/parse-collections-page';
 

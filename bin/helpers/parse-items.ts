@@ -1,5 +1,5 @@
 import { JSDOM } from 'jsdom';
-import { Item } from '../../types';
+import type { Item } from '../../types';
 import { cleanName } from './clean-name';
 import { parseItemId } from './parse-item-id';
 

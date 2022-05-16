@@ -1,7 +1,7 @@
 import { describe, test } from '@jest/globals';
 import fs from 'fs';
 import path from 'path';
-import { Item } from '../../types';
+import type { Item } from '../../types';
 import { parseItems } from './parse-items';
 
 const mainCollectionsPage = fs.readFileSync(path.resolve(__dirname, './fixtures/main-collections-page.html'), 'utf8');
@@ -19,7 +19,7 @@ describe('parse items', () => {
 
   describe('parses item names from a single item', () => {
     test('not enchanted', () => {
-      expect(items.get(25)).toEqual({id: 25, name: 'Составная Костяная Кираса'});
+      expect(items.get(25)).toEqual({ id: 25, name: 'Составная Костяная Кираса' });
     });
 
     test.todo('enchanted');
@@ -29,7 +29,7 @@ describe('parse items', () => {
     test.todo('not enchanted');
 
     test('enchanted', () => {
-      expect(items.get(280)).toEqual({ id: 280, name: 'Легкий Лук'});
+      expect(items.get(280)).toEqual({ id: 280, name: 'Легкий Лук' });
     });
 
     test('enchanted sealed', () => {
@@ -38,6 +38,6 @@ describe('parse items', () => {
   });
 
   test('all ids has names', () => {
-    expect([...items.values()].every(item => item.name.length > 0)).toBe(true);
+    expect([...items.values()].every((item) => item.name.length > 0)).toBe(true);
   });
 });
