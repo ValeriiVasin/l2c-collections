@@ -5,6 +5,10 @@ import type { Item } from '../../types';
 import { parseItems } from './parse-items';
 
 const mainCollectionsPage = fs.readFileSync(path.resolve(__dirname, './fixtures/main-collections-page.html'), 'utf8');
+const mainCollectionsPageTwo = fs.readFileSync(
+  path.resolve(__dirname, './fixtures/main-collections-page-two.html'),
+  'utf8',
+);
 
 describe('parse items', () => {
   let items: Map<number, Item>;
@@ -22,7 +26,10 @@ describe('parse items', () => {
       expect(items.get(25)).toEqual({ id: 25, name: 'Составная Костяная Кираса' });
     });
 
-    test.todo('enchanted');
+    test('enchanted', () => {
+      items = parseItems(mainCollectionsPageTwo);
+      expect(items.get(847)).toEqual({ id: 847, name: 'Серьга Багрового Полумесяца' });
+    });
   });
 
   describe('parses item names from the list', () => {
