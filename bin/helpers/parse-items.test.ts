@@ -33,22 +33,26 @@ describe('parse items', () => {
   });
 
   describe('parses item names from the list', () => {
-    test('not enchanted', () => {
-      items = parseItems(mainCollectionsPageTwo);
-      expect(items.get(93)).toEqual({ id: 93, name: 'Крылатое Копье' });
+    describe('enchanted', () => {
+      test('sealed', () => {
+        expect(items.get(95028)).toEqual({ id: 95028, name: 'Легкий Лук', sealed: true });
+      });
+
+      test('not sealed', () => {
+        expect(items.get(280)).toEqual({ id: 280, name: 'Легкий Лук' });
+      });
     });
 
-    test('not enchanted sealed', () => {
-      items = parseItems(mainCollectionsPageTwo);
-      expect(items.get(94927)).toEqual({ id: 94927, name: 'Крылатое Копье', sealed: true });
-    });
+    describe('not enchanted', () => {
+      test('sealed', () => {
+        items = parseItems(mainCollectionsPageTwo);
+        expect(items.get(94927)).toEqual({ id: 94927, name: 'Крылатое Копье', sealed: true });
+      });
 
-    test('enchanted', () => {
-      expect(items.get(280)).toEqual({ id: 280, name: 'Легкий Лук' });
-    });
-
-    test('enchanted sealed', () => {
-      expect(items.get(95028)).toEqual({ id: 95028, name: 'Легкий Лук', sealed: true });
+      test('not sealed', () => {
+        items = parseItems(mainCollectionsPageTwo);
+        expect(items.get(93)).toEqual({ id: 93, name: 'Крылатое Копье' });
+      });
     });
   });
 
