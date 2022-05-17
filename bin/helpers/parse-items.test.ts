@@ -33,7 +33,15 @@ describe('parse items', () => {
   });
 
   describe('parses item names from the list', () => {
-    test.todo('not enchanted');
+    test('not enchanted', () => {
+      items = parseItems(mainCollectionsPageTwo);
+      expect(items.get(93)).toEqual({ id: 93, name: 'Крылатое Копье' });
+    });
+
+    test('not enchanted sealed', () => {
+      items = parseItems(mainCollectionsPageTwo);
+      expect(items.get(94927)).toEqual({ id: 94927, name: 'Крылатое Копье', sealed: true });
+    });
 
     test('enchanted', () => {
       expect(items.get(280)).toEqual({ id: 280, name: 'Легкий Лук' });
@@ -45,6 +53,10 @@ describe('parse items', () => {
   });
 
   test('all ids has names', () => {
-    expect([...items.values()].every((item) => item.name.length > 0)).toBe(true);
+    const findNodeWithoutName = (items: Map<number, Item>) => {
+      return [...items.values()].find((item) => item.name.length === 0);
+    };
+
+    expect(findNodeWithoutName(items)).toBeUndefined();
   });
 });
