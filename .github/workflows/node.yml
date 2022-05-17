@@ -19,5 +19,7 @@ jobs:
         with:
           node-version: 18
       - run: npm ci
+      - run: npm run lint
+      - run: npm run check-types
       - run: npm run build --if-present
-      - run: npm run ci
+      - run: npm test
