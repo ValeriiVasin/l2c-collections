@@ -9,4 +9,8 @@ describe('clean name', () => {
   test('trims content', () => {
     expect(cleanName('Легкий Лук ')).toBe('Легкий Лук');
   });
+
+  test('removes enchant in the beginning', () => {
+    expect(cleanName('+4 Серьга Багрового Полумесяца')).toBe('Серьга Багрового Полумесяца');
+  });
 });

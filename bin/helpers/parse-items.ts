@@ -34,7 +34,13 @@ function parseName(link: HTMLAnchorElement): string {
   }
 
   // inside the list
-  return cleanName(link.querySelector('div > span:nth-child(2)')?.textContent ?? '');
+
+  // order of nodes inside of a div:
+  // - <Optional> enchant level
+  // - item name
+  // - <Optional> sealed title
+  const nameNodeOrder = link.querySelector('.enchant') ? 2 : 1;
+  return cleanName(link.querySelector(`div > span:nth-child(${nameNodeOrder})`)?.textContent ?? '');
 }
 
 function isSealed(link: HTMLAnchorElement): boolean {

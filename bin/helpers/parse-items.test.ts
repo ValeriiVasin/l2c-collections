@@ -5,6 +5,10 @@ import type { Item } from '../../types';
 import { parseItems } from './parse-items';
 
 const mainCollectionsPage = fs.readFileSync(path.resolve(__dirname, './fixtures/main-collections-page.html'), 'utf8');
+const mainCollectionsPageTwo = fs.readFileSync(
+  path.resolve(__dirname, './fixtures/main-collections-page-two.html'),
+  'utf8',
+);
 
 describe('parse items', () => {
   let items: Map<number, Item>;
@@ -22,22 +26,41 @@ describe('parse items', () => {
       expect(items.get(25)).toEqual({ id: 25, name: 'Составная Костяная Кираса' });
     });
 
-    test.todo('enchanted');
+    test('enchanted', () => {
+      items = parseItems(mainCollectionsPageTwo);
+      expect(items.get(847)).toEqual({ id: 847, name: 'Серьга Багрового Полумесяца' });
+    });
   });
 
   describe('parses item names from the list', () => {
-    test.todo('not enchanted');
+    describe('enchanted', () => {
+      test('sealed', () => {
+        expect(items.get(95028)).toEqual({ id: 95028, name: 'Легкий Лук', sealed: true });
+      });
 
-    test('enchanted', () => {
-      expect(items.get(280)).toEqual({ id: 280, name: 'Легкий Лук' });
+      test('not sealed', () => {
+        expect(items.get(280)).toEqual({ id: 280, name: 'Легкий Лук' });
+      });
     });
 
-    test('enchanted sealed', () => {
-      expect(items.get(95028)).toEqual({ id: 95028, name: 'Легкий Лук', sealed: true });
+    describe('not enchanted', () => {
+      test('sealed', () => {
+        items = parseItems(mainCollectionsPageTwo);
+        expect(items.get(94927)).toEqual({ id: 94927, name: 'Крылатое Копье', sealed: true });
+      });
+
+      test('not sealed', () => {
+        items = parseItems(mainCollectionsPageTwo);
+        expect(items.get(93)).toEqual({ id: 93, name: 'Крылатое Копье' });
+      });
     });
   });
 
   test('all ids has names', () => {
-    expect([...items.values()].every((item) => item.name.length > 0)).toBe(true);
+    const findNodeWithoutName = (items: Map<number, Item>) => {
+      return [...items.values()].find((item) => item.name.length === 0);
+    };
+
+    expect(findNodeWithoutName(items)).toBeUndefined();
   });
 });
