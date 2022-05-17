@@ -34,7 +34,7 @@
     }
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md,eslintrc,prettierrc,html}": [
+    "**/*.{js,jsx,ts,tsx,json,css,scss,md,eslintrc,prettierrc,html}": [
       "prettier --write --ignore-unknown"
     ]
   }
