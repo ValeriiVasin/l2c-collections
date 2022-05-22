@@ -17,3 +17,5 @@ export interface Collection {
   items: Array<CollectionItem>;
   effects: string;
 }
+
+export type Tag = 'attack' | 'defense' | 'support' | 'special' | 'stats' | 'utility' | 'event';
