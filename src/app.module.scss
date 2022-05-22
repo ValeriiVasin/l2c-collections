@@ -1,0 +1,76 @@
+.content {
+  width: 960px;
+  margin: 0 auto;
+}
+
+.filter {
+  display: flex;
+  margin: 32px 0 16px;
+}
+
+.filter-input {
+  flex-grow: 1;
+  height: 32px;
+  padding: 16px 8px;
+  border-radius: 8px;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  margin: 32px;
+}
+
+.nav-item {
+  padding: 0 16px;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.table {
+  width: 100%
+}
+
+.table thead tr td {
+  font-weight: 800;
+}
+
+.collection {
+  &:nth-child(even) {
+    background-color: lightgray;
+  }
+
+  td {
+    padding: 16px 8px;
+    vertical-align:middle;
+  }
+}
+
+.collection-name {
+  max-width: 300px;
+}
+
+.collection-items {}
+
+.collection-effect {
+  max-width: 150px;
+}
+
+.collection-items-wrapper {
+  display: inline-flex;
+}
+
+.collection-item {
+  margin-right: 8px;
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+$image-size: 48px;
+.collection-item-image {
+  width: $image-size;
+  height: $image-size;
+}
