@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import type { Collection, CollectionItem, EnchantedItem } from '../types';
 import styles from './app.module.scss';
 import collectionsJSON from './data/collections.json';
+import imagesJSON from './data/images.json';
 
 const cx = classNames.bind(styles);
 
@@ -56,12 +57,13 @@ function CollectionItemsUi({ collection }: { collection: Collection }) {
 
 function CollectionItemUi({ item }: { item: CollectionItem }) {
   const singleItem: EnchantedItem = Array.isArray(item) ? item[0] : item;
+  const base64Image: string = imagesJSON[singleItem.id.toString() as keyof typeof imagesJSON];
 
   return (
     <div className={cx('collection-item')}>
       <img
         className={cx('collection-item-image')}
-        src={`https://l2central.info/api/classic/icon/?item=${singleItem.id}`}
+        src={`data:image/gif;base64,${base64Image}`}
         alt={String(singleItem.id)}
       />
     </div>
