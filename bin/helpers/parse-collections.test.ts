@@ -56,11 +56,27 @@ describe('parse collections', () => {
           }),
         );
       });
-      test.todo('item from the list');
+
+      test('item from the list', () => {
+        expect(parseCollections(mainCollectionsPageTwo)).toContainEqual(
+          expect.objectContaining({
+            name: 'Стремление к моде',
+            items: expect.arrayContaining([expect.arrayContaining([{ id: 434, enchant: 4 }])]),
+          }),
+        );
+      });
     });
 
     describe('count', () => {
-      test.todo('single item');
+      test('single item', () => {
+        expect(parseCollections(utilityCollectionsPage)).toContainEqual(
+          expect.objectContaining({
+            name: 'Коллекция Рун Развития I',
+            items: expect.arrayContaining([{ id: 94780, count: 5 }]),
+          }),
+        );
+      });
+
       test.todo('item from the list');
     });
   });
