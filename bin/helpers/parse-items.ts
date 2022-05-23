@@ -2,6 +2,7 @@ import { JSDOM } from 'jsdom';
 import type { Item } from '../../types';
 import { cleanName } from './clean-name';
 import { parseItemId } from './parse-item-id';
+import { parseTitle } from './parse-title';
 
 export function parseItems(content: string): Map<number, Item> {
   const { document } = new JSDOM(content).window;
@@ -28,9 +29,10 @@ export function parseItems(content: string): Map<number, Item> {
 }
 
 function parseName(link: HTMLAnchorElement): string {
+  const title = link.getAttribute('data-title');
   // single
-  if (link.hasAttribute('data-title')) {
-    return cleanName(link.getAttribute('data-title') ?? '');
+  if (title) {
+    return parseTitle(title).name;
   }
 
   // inside the list

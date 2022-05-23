@@ -32,4 +32,9 @@ describe('parse title', () => {
       count: 2,
     });
   });
+
+  test('item name with the level', () => {
+    expect(parseTitle('Руна Развития Ур. 8(1)')).toEqual({ name: 'Руна Развития Ур. 8' });
+    expect(parseTitle('Руна Развития Ур. 8(2)')).toEqual({ name: 'Руна Развития Ур. 8', count: 2 });
+  });
 });
