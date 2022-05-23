@@ -37,4 +37,12 @@ describe('parse title', () => {
     expect(parseTitle('Руна Развития Ур. 8(1)')).toEqual({ name: 'Руна Развития Ур. 8' });
     expect(parseTitle('Руна Развития Ур. 8(2)')).toEqual({ name: 'Руна Развития Ур. 8', count: 2 });
   });
+
+  test('item with whitespaces', () => {
+    expect(parseTitle('+3   Серьга Багрового Полумесяца  (2)')).toEqual({
+      enchant: 3,
+      name: 'Серьга Багрового Полумесяца',
+      count: 2,
+    });
+  });
 });

@@ -1,4 +1,4 @@
-const regexp = /^(\+(?<enchant>\d+))?\s?(?<name>.*?)(\((?<count>\d+)\))?$/;
+const regexp = /^(\+(?<enchant>\d+))?\s*(?<name>.*?)(\((?<count>\d+)\))?$/;
 
 interface ParseTitleResult {
   name: string;
@@ -16,7 +16,7 @@ export function parseTitle(title: string): ParseTitleResult {
   const count = match.groups.count;
   const enchant = match.groups.enchant;
 
-  const result: ParseTitleResult = { name: match.groups.name };
+  const result: ParseTitleResult = { name: match.groups.name.trim() };
 
   if (count && Number(count) > 1) {
     result.count = Number(count);

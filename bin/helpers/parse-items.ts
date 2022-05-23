@@ -1,6 +1,5 @@
 import { JSDOM } from 'jsdom';
 import type { Item } from '../../types';
-import { cleanName } from './clean-name';
 import { parseItemId } from './parse-item-id';
 import { parseTitle } from './parse-title';
 
@@ -42,7 +41,7 @@ function parseName(link: HTMLAnchorElement): string {
   // - item name
   // - <Optional> sealed title
   const nameNodeOrder = link.querySelector('.enchant') ? 2 : 1;
-  return cleanName(link.querySelector(`div > span:nth-child(${nameNodeOrder})`)?.textContent ?? '');
+  return parseTitle(link.querySelector(`div > span:nth-child(${nameNodeOrder})`)?.textContent ?? '').name;
 }
 
 function isSealed(link: HTMLAnchorElement): boolean {
