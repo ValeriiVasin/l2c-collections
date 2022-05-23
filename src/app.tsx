@@ -1,8 +1,11 @@
 import classNames from 'classnames/bind';
-import type { Collection, CollectionItem, EnchantedItem } from '../types';
+import type { Collection, CollectionItem, EnchantedItem, Item } from '../types';
 import styles from './app.module.scss';
 import collectionsJSON from './data/collections.json';
 import imagesJSON from './data/images.json';
+import itemsJSON from './data/items.json';
+
+const itemsMap = new Map<number, Item>(itemsJSON.map((item) => [item.id, item]));
 
 const cx = classNames.bind(styles);
 
@@ -60,7 +63,11 @@ function CollectionItemUi({ item }: { item: CollectionItem }) {
   const base64Image: string = imagesJSON[singleItem.id.toString() as keyof typeof imagesJSON];
 
   return (
-    <div className={cx('collection-item')}>
+    <div className={cx('collection-item')} title={itemsMap.get(singleItem.id)?.name}>
+      {singleItem.enchant && <div className={cx('collection-item-enchant')}>{singleItem.enchant}</div>}
+      {singleItem.count && singleItem.count > 1 && (
+        <div className={cx('collection-item-count')}>{singleItem.count}</div>
+      )}
       <img
         className={cx('collection-item-image')}
         src={`data:image/gif;base64,${base64Image}`}
