@@ -58,12 +58,28 @@ function CollectionItemsUi({ collection }: { collection: Collection }) {
   );
 }
 
+function getTitle({ name, enchant, count }: { name: string; enchant?: number; count?: number }): string {
+  let result = name;
+
+  if (enchant) {
+    result = `+${enchant} ${result}`;
+  }
+
+  return `${result} - ${count ?? 1}шт.`;
+}
+
 function CollectionItemUi({ item }: { item: CollectionItem }) {
   const singleItem: EnchantedItem = Array.isArray(item) ? item[0] : item;
   const base64Image: string = imagesJSON[singleItem.id.toString() as keyof typeof imagesJSON];
 
+  const title = getTitle({
+    name: itemsMap.get(singleItem.id)?.name ?? '',
+    enchant: singleItem.enchant,
+    count: singleItem.count,
+  });
+
   return (
-    <div className={cx('collection-item')} title={itemsMap.get(singleItem.id)?.name}>
+    <div className={cx('collection-item')} title={title}>
       {singleItem.enchant && <div className={cx('collection-item-enchant')}>{singleItem.enchant}</div>}
       {singleItem.count && singleItem.count > 1 && (
         <div className={cx('collection-item-count')}>{singleItem.count}</div>
