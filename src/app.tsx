@@ -5,8 +5,12 @@ import styles from './app.module.scss';
 import collectionsJSON from './data/collections.json';
 import imagesJSON from './data/images.json';
 import itemsJSON from './data/items.json';
+import tagsJSON from './data/tags.json';
 
 const itemsMap = new Map<number, Item>(itemsJSON.map((item) => [item.id, item]));
+const tagsMap = new Map<Tag, Set<string>>(
+  Object.entries(tagsJSON).map(([tag, collectionNames]) => [tag as Tag, new Set(collectionNames)]),
+);
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +18,8 @@ type TagsWithAll = Tag | 'all';
 
 function App() {
   const [tag, setTag] = useState<TagsWithAll>('all');
+  const collections =
+    tag === 'all' ? collectionsJSON : collectionsJSON.filter((collection) => tagsMap.get(tag)?.has(collection.name));
 
   return (
     <div className={cx('content')}>
@@ -55,7 +61,7 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {collectionsJSON.map((collection) => (
+          {collections.map((collection) => (
             <tr key={collection.name} className={cx('collection')}>
               <td className={cx('collection-name')}>{collection.name}</td>
               <td className={cx('collection-items')}>
