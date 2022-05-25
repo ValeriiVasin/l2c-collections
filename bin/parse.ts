@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { parseCollectionsPages } from './helpers/parse-collections-pages';
 
-const itemsFile = path.resolve(__dirname, '../data/items.json');
-const collectionsFile = path.resolve(__dirname, '../data/collections.json');
+const itemsFile = path.resolve(__dirname, '../src/data/items.json');
+const collectionsFile = path.resolve(__dirname, '../src/data/collections.json');
 
 async function main() {
   const { items, collections } = await parseCollectionsPages({

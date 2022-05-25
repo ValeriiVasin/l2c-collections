@@ -6,6 +6,8 @@
     "node": true
   },
   "extends": [
+    "react-app",
+    "react-app/jest",
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
@@ -14,6 +16,8 @@
   "rules": {
     "prettier/prettier": "error",
     "@typescript-eslint/consistent-type-imports": "error",
-    "no-console": "error"
+    "no-console": "error",
+    // rule creates problems with json files
+    "no-unused-expressions": "off"
   }
 }

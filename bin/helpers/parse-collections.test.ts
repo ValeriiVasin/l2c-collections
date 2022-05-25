@@ -5,6 +5,10 @@ import type { Collection } from '../../types';
 import { parseCollections } from './parse-collections';
 
 const mainCollectionsPage = fs.readFileSync(path.resolve(__dirname, './fixtures/main-collections-page.html'), 'utf8');
+const mainCollectionsPageTwo = fs.readFileSync(
+  path.resolve(__dirname, './fixtures/main-collections-page-two.html'),
+  'utf8',
+);
 const utilityCollectionsPage = fs.readFileSync(
   path.resolve(__dirname, './fixtures/utility-collections-page.html'),
   'utf8',
@@ -40,5 +44,40 @@ describe('parse collections', () => {
     };
 
     expect(parseCollections(utilityCollectionsPage)).toContainEqual(collection);
+  });
+
+  describe('parse items inside of the collection', () => {
+    describe('enchant', () => {
+      test('single enchanted item', () => {
+        expect(parseCollections(mainCollectionsPageTwo)).toContainEqual(
+          expect.objectContaining({
+            name: 'Стремление к моде',
+            items: expect.arrayContaining([{ id: 847, enchant: 4 }]),
+          }),
+        );
+      });
+
+      test('item from the list', () => {
+        expect(parseCollections(mainCollectionsPageTwo)).toContainEqual(
+          expect.objectContaining({
+            name: 'Стремление к моде',
+            items: expect.arrayContaining([expect.arrayContaining([{ id: 434, enchant: 4 }])]),
+          }),
+        );
+      });
+    });
+
+    describe('count', () => {
+      test('single item', () => {
+        expect(parseCollections(utilityCollectionsPage)).toContainEqual(
+          expect.objectContaining({
+            name: 'Коллекция Рун Развития I',
+            items: expect.arrayContaining([{ id: 94780, count: 5 }]),
+          }),
+        );
+      });
+
+      test.todo('item from the list');
+    });
   });
 });

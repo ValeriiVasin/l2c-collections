@@ -1,6 +1,7 @@
 import { JSDOM } from 'jsdom';
 import type { Collection, CollectionItem, EnchantedItem } from '../../types';
 import { parseItemId } from './parse-item-id';
+import { parseTitle } from './parse-title';
 
 export function parseCollections(content: string): Array<Collection> {
   const { document } = new JSDOM(content).window;
@@ -48,6 +49,13 @@ function parseCollectionItem(item: Element): CollectionItem {
 }
 
 function parseEnchant(link: HTMLAnchorElement): number | undefined {
+  // try to parse from data-title (single item case)
+  const title = link.getAttribute('data-title');
+  if (title) {
+    return parseTitle(title).enchant;
+  }
+
+  // try to parse from .enchant (list item case)
   const enchantNode = link.querySelector('.enchant');
 
   if (!enchantNode || !enchantNode.textContent) {

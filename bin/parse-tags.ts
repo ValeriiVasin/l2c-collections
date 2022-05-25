@@ -3,7 +3,7 @@ import path from 'path';
 import type { Collection, Tag, TaggedCollections } from '../types';
 import { parseCollectionsPages } from './helpers/parse-collections-pages';
 
-const tagsFile = path.resolve(__dirname, '../data/tags.json');
+const tagsFile = path.resolve(__dirname, '../src/data/tags.json');
 
 const config: Record<Tag, { baseUrl: string; pages: number }> = {
   attack: { baseUrl: 'https://l2central.info/classic/items/collections/attack/', pages: 4 },

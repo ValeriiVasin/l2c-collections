@@ -9,6 +9,7 @@ const mainCollectionsPageTwo = fs.readFileSync(
   path.resolve(__dirname, './fixtures/main-collections-page-two.html'),
   'utf8',
 );
+const utilityPage = fs.readFileSync(path.resolve(__dirname, './fixtures/utility-collections-page.html'), 'utf8');
 
 describe('parse items', () => {
   let items: Map<number, Item>;
@@ -62,5 +63,14 @@ describe('parse items', () => {
     };
 
     expect(findNodeWithoutName(items)).toBeUndefined();
+  });
+
+  describe('parses items with level', () => {
+    test('rune', () => {
+      items = parseItems(utilityPage);
+      expect(items.get(94788)).toEqual({ id: 94788, name: 'Руна Развития Ур. 8' });
+    });
+
+    test.todo('doll');
   });
 });
