@@ -20,9 +20,11 @@ jobs:
           node-version: 18
       - name: Install ependencies
         run: npm ci
-      - name: Lint
-        run: npm run lint
-      - name: Check types
-        run: npm run check-types
+      - name: Lint and Check types
+        run: |
+          npm run lint
+          npm run check-types
       - name: Tests
         run: npm test
+      - name: Build
+        run: npm build
