@@ -1,28 +1,56 @@
 import classNames from 'classnames/bind';
-import type { Collection, CollectionItem, EnchantedItem, Item } from '../types';
+import { useState } from 'react';
+import type { Collection, CollectionItem, EnchantedItem, Item, Tag } from '../types';
 import styles from './app.module.scss';
 import collectionsJSON from './data/collections.json';
 import imagesJSON from './data/images.json';
 import itemsJSON from './data/items.json';
+import tagsJSON from './data/tags.json';
 
 const itemsMap = new Map<number, Item>(itemsJSON.map((item) => [item.id, item]));
+const tagsMap = new Map<Tag, Set<string>>(
+  Object.entries(tagsJSON).map(([tag, collectionNames]) => [tag as Tag, new Set(collectionNames)]),
+);
 
 const cx = classNames.bind(styles);
 
+type TagsWithAll = Tag | 'all';
+
 function App() {
+  const [tag, setTag] = useState<TagsWithAll>('all');
+  const collections =
+    tag === 'all' ? collectionsJSON : collectionsJSON.filter((collection) => tagsMap.get(tag)?.has(collection.name));
+
   return (
     <div className={cx('content')}>
       <div className={cx('filter')}>
         <input type="search" className={cx('filter-input')} />
       </div>
       <ul className={cx('nav')}>
-        <li className={cx('nav-item')}>Атака</li>
-        <li className={cx('nav-item')}>Защита</li>
-        <li className={cx('nav-item')}>Помощь в бою</li>
-        <li className={cx('nav-item')}>Особый</li>
-        <li className={cx('nav-item')}>Характеристики</li>
-        <li className={cx('nav-item')}>Удобство</li>
-        <li className={cx('nav-item')}>Ивент</li>
+        <li className={cx('nav-item', { 'is-selected': tag === 'all' })} onClick={() => setTag('all')}>
+          Все
+        </li>
+        <li className={cx('nav-item', { 'is-selected': tag === 'attack' })} onClick={() => setTag('attack')}>
+          Атака
+        </li>
+        <li className={cx('nav-item', { 'is-selected': tag === 'defense' })} onClick={() => setTag('defense')}>
+          Защита
+        </li>
+        <li className={cx('nav-item', { 'is-selected': tag === 'support' })} onClick={() => setTag('support')}>
+          Помощь в бою
+        </li>
+        <li className={cx('nav-item', { 'is-selected': tag === 'special' })} onClick={() => setTag('special')}>
+          Особый
+        </li>
+        <li className={cx('nav-item', { 'is-selected': tag === 'stats' })} onClick={() => setTag('stats')}>
+          Характеристики
+        </li>
+        <li className={cx('nav-item', { 'is-selected': tag === 'utility' })} onClick={() => setTag('utility')}>
+          Удобство
+        </li>
+        <li className={cx('nav-item', { 'is-selected': tag === 'event' })} onClick={() => setTag('event')}>
+          Ивент
+        </li>
       </ul>
       <table className={cx('table')}>
         <thead>
@@ -33,7 +61,7 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {collectionsJSON.map((collection) => (
+          {collections.map((collection) => (
             <tr key={collection.name} className={cx('collection')}>
               <td className={cx('collection-name')}>{collection.name}</td>
               <td className={cx('collection-items')}>
