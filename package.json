@@ -10,7 +10,7 @@
     "prepare": "husky install",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "jest {src,bin}",
     "test:integration": "cypress run",
     "test:integration:ci": "start-server-and-test 3000 test:integration",
     "eject": "react-scripts eject"
