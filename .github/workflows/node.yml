@@ -26,7 +26,11 @@ jobs:
           npm run check-types
       - name: Unit tests
         run: npm test
-      - name: Integration tests
-        run: npm run test:integration:ci
       - name: Build
-        run: npm run build
+        run: |
+          echo "$NODE_ENV"
+          npm run build
+      - name: Integration tests
+        run: |
+          ls -lah build
+          npm run test:integration:ci
