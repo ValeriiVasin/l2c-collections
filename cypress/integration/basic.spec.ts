@@ -1,6 +1,9 @@
 describe('basic tests', () => {
-  it('having proper tytle', () => {
+  beforeEach(() => {
     cy.visit('/');
+  });
+
+  it('having proper tytle', () => {
     cy.title().should('equal', 'L2 Classic Collections');
   });
 });
