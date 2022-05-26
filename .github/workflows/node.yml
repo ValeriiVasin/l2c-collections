@@ -24,7 +24,9 @@ jobs:
         run: |
           npm run lint
           npm run check-types
-      - name: Tests
+      - name: Unit tests
         run: npm test
       - name: Build
         run: npm run build
+      - name: Integration tests
+        run: npm run test:integration:ci
