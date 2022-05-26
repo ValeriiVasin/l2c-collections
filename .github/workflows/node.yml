@@ -27,10 +27,6 @@ jobs:
       - name: Unit tests
         run: npm test
       - name: Build
-        run: |
-          echo "$NODE_ENV"
-          npm run build
+        run: npm run build
       - name: Integration tests
-        run: |
-          ls -lah build
-          npm run test:integration:ci
+        run: npm run test:integration:ci
