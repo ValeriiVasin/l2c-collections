@@ -1,5 +1,7 @@
 import classNames from 'classnames/bind';
-import { useState } from 'react';
+import Fuse from 'fuse.js';
+import debounce from 'lodash/debounce';
+import { useEffect, useState } from 'react';
 import type { Collection, CollectionItem, EnchantedItem, Item, Tag } from '../types';
 import styles from './app.module.scss';
 import collectionsJSON from './data/collections.json';
@@ -17,14 +19,28 @@ const cx = classNames.bind(styles);
 type TagsWithAll = Tag | 'all';
 
 function App() {
+  const [filterText, setFilterText] = useState('');
+  const [filter, setFilter] = useState('');
   const [tag, setTag] = useState<TagsWithAll>('all');
-  const collections =
+  const taggedCollections =
     tag === 'all' ? collectionsJSON : collectionsJSON.filter((collection) => tagsMap.get(tag)?.has(collection.name));
+  const fuse = new Fuse(taggedCollections, { keys: ['name', 'effects'], threshold: 0.4 });
+  const collections = fuse.search(filter).map((result) => result.item);
+  const debouncedSetFilter = debounce(setFilter, 1000);
+
+  useEffect(() => {
+    debouncedSetFilter(filterText);
+  }, [debouncedSetFilter, filterText]);
 
   return (
     <div className={cx('content')}>
       <div className={cx('filter')}>
-        <input type="search" className={cx('filter-input')} />
+        <input
+          type="search"
+          className={cx('filter-input')}
+          value={filterText}
+          onChange={(event) => setFilterText(event.target.value)}
+        />
       </div>
       <ul className={cx('nav')}>
         <li className={cx('nav-item', { 'is-selected': tag === 'all' })} onClick={() => setTag('all')}>
