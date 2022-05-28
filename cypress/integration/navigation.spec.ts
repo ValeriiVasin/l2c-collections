@@ -25,6 +25,12 @@ describe('navigation', () => {
     cy.url().should('contain', 'tab=attack');
   });
 
+  it('preserves selected navigation from query', () => {
+    cy.visit('?tab=attack');
+    cy.get(selectors.activeNavItem).contains('Атака');
+    cy.get(selectors.collection).should('have.length', 61);
+  });
+
   it('filters items by tags', () => {
     cy.get(selectors.collection).should('have.length', 300);
     cy.get(selectors.navItemAttack).click();

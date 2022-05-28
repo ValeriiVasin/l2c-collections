@@ -10,6 +10,7 @@ import collectionsJSON from './data/collections.json';
 import imagesJSON from './data/images.json';
 import itemsJSON from './data/items.json';
 import tagsJSON from './data/tags.json';
+import { useAppSearchParams } from './hooks/use-app-search-params';
 
 const itemsMap = new Map<number, Item>(itemsJSON.map((item) => [item.id, item]));
 const tagsMap = new Map<Tag, Set<string>>(
@@ -51,10 +52,13 @@ const searchItems = prepare(collectionsJSON, itemsMap);
 type TagsWithAll = Tag | 'all';
 
 function App() {
+  const {
+    searchParams: { tab },
+    setSearchParams,
+  } = useAppSearchParams<{ tab: TagsWithAll }>({ tab: 'all' });
   const debouncedRef = useRef<null | DebouncedFunc<(q: string) => void>>(null);
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState('');
-  const [tag, setTag] = useState<TagsWithAll>('all');
   const filteredCollections: Array<Collection> = useMemo(
     () =>
       filter
@@ -64,10 +68,10 @@ function App() {
   );
   const collections = useMemo(
     () =>
-      tag === 'all'
+      tab === 'all'
         ? filteredCollections
-        : filteredCollections.filter((collection) => tagsMap.get(tag)?.has(collection.name)),
-    [tag, filteredCollections],
+        : filteredCollections.filter((collection) => tagsMap.get(tab)?.has(collection.name)),
+    [tab, filteredCollections],
   );
 
   debouncedRef.current = useMemo(() => {
@@ -95,57 +99,57 @@ function App() {
       <ul className={cx('nav')} data-testid="navigation">
         <li
           data-testid="nav-all"
-          className={cx('nav-item', { 'is-selected': tag === 'all' })}
-          onClick={() => setTag('all')}
+          className={cx('nav-item', { 'is-selected': tab === 'all' })}
+          onClick={() => setSearchParams({ tab: 'all' })}
         >
           Все
         </li>
         <li
           data-testid="nav-attack"
-          className={cx('nav-item', { 'is-selected': tag === 'attack' })}
-          onClick={() => setTag('attack')}
+          className={cx('nav-item', { 'is-selected': tab === 'attack' })}
+          onClick={() => setSearchParams({ tab: 'attack' })}
         >
           Атака
         </li>
         <li
           data-testid="nav-defense"
-          className={cx('nav-item', { 'is-selected': tag === 'defense' })}
-          onClick={() => setTag('defense')}
+          className={cx('nav-item', { 'is-selected': tab === 'defense' })}
+          onClick={() => setSearchParams({ tab: 'defense' })}
         >
           Защита
         </li>
         <li
           data-testid="nav-support"
-          className={cx('nav-item', { 'is-selected': tag === 'support' })}
-          onClick={() => setTag('support')}
+          className={cx('nav-item', { 'is-selected': tab === 'support' })}
+          onClick={() => setSearchParams({ tab: 'support' })}
         >
           Помощь в бою
         </li>
         <li
           data-testid="nav-special"
-          className={cx('nav-item', { 'is-selected': tag === 'special' })}
-          onClick={() => setTag('special')}
+          className={cx('nav-item', { 'is-selected': tab === 'special' })}
+          onClick={() => setSearchParams({ tab: 'special' })}
         >
           Особый
         </li>
         <li
           data-testid="nav-stats"
-          className={cx('nav-item', { 'is-selected': tag === 'stats' })}
-          onClick={() => setTag('stats')}
+          className={cx('nav-item', { 'is-selected': tab === 'stats' })}
+          onClick={() => setSearchParams({ tab: 'stats' })}
         >
           Характеристики
         </li>
         <li
           data-testid="nav-utility"
-          className={cx('nav-item', { 'is-selected': tag === 'utility' })}
-          onClick={() => setTag('utility')}
+          className={cx('nav-item', { 'is-selected': tab === 'utility' })}
+          onClick={() => setSearchParams({ tab: 'utility' })}
         >
           Удобство
         </li>
         <li
           data-testid="nav-event"
-          className={cx('nav-item', { 'is-selected': tag === 'event' })}
-          onClick={() => setTag('event')}
+          className={cx('nav-item', { 'is-selected': tab === 'event' })}
+          onClick={() => setSearchParams({ tab: 'event' })}
         >
           Ивент
         </li>

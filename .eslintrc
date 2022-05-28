@@ -19,5 +19,6 @@
     "no-console": "error",
     // rule creates problems with json files
     "no-unused-expressions": "off"
-  }
+  },
+  "ignorePatterns": ["node_modules", "dist"]
 }
