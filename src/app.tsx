@@ -19,18 +19,18 @@ const cx = classNames.bind(styles);
 type TagsWithAll = Tag | 'all';
 
 function App() {
-  const [filterText, setFilterText] = useState('');
+  const [query, setQuery] = useState('');
   const [filter, setFilter] = useState('');
   const [tag, setTag] = useState<TagsWithAll>('all');
   const taggedCollections =
     tag === 'all' ? collectionsJSON : collectionsJSON.filter((collection) => tagsMap.get(tag)?.has(collection.name));
-  const fuse = new Fuse(taggedCollections, { keys: ['name', 'effects'], threshold: 0.4 });
-  const collections = fuse.search(filter).map((result) => result.item);
+  const fuse = new Fuse(taggedCollections, { keys: ['name', 'effects'], ignoreLocation: true, threshold: 0.6 });
+  const collections = filter ? fuse.search(filter).map((result) => result.item) : taggedCollections;
   const debouncedSetFilter = debounce(setFilter, 1000);
 
   useEffect(() => {
-    debouncedSetFilter(filterText);
-  }, [debouncedSetFilter, filterText]);
+    debouncedSetFilter(query);
+  }, [debouncedSetFilter, query]);
 
   return (
     <div className={cx('content')}>
@@ -38,8 +38,8 @@ function App() {
         <input
           type="search"
           className={cx('filter-input')}
-          value={filterText}
-          onChange={(event) => setFilterText(event.target.value)}
+          value={query}
+          onChange={({ currentTarget }) => setQuery(currentTarget.value)}
         />
       </div>
       <ul className={cx('nav')}>
