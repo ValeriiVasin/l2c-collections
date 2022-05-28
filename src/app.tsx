@@ -54,13 +54,12 @@ type TagsWithAll = Tag | 'all';
 
 function App() {
   const {
-    searchParams: { tab },
+    searchParams: { tab, query },
     setSearchParams,
     url,
-  } = useAppSearchParams<{ tab: TagsWithAll }>({ tab: 'all' });
+  } = useAppSearchParams<{ tab: TagsWithAll; query: string }>({ tab: 'all', query: '' });
   const debouncedRef = useRef<null | DebouncedFunc<(q: string) => void>>(null);
-  const [query, setQuery] = useState('');
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState(query);
   const filteredCollections: Array<Collection> = useMemo(
     () =>
       filter
@@ -81,7 +80,7 @@ function App() {
       debouncedRef.current.cancel();
     }
 
-    return debounce(setFilter, 1000);
+    return debounce(setFilter, 500);
   }, [setFilter]);
 
   useEffect(() => {
@@ -95,7 +94,8 @@ function App() {
           type="search"
           className={cx('filter-input')}
           value={query}
-          onChange={({ currentTarget }) => setQuery(currentTarget.value)}
+          data-testid="filter"
+          onChange={({ currentTarget }) => setSearchParams({ query: currentTarget.value })}
         />
       </div>
       <ul className={cx('nav')} data-testid="navigation">
