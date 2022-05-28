@@ -92,29 +92,61 @@ function App() {
           onChange={({ currentTarget }) => setQuery(currentTarget.value)}
         />
       </div>
-      <ul className={cx('nav')}>
-        <li className={cx('nav-item', { 'is-selected': tag === 'all' })} onClick={() => setTag('all')}>
+      <ul className={cx('nav')} data-testid="navigation">
+        <li
+          data-testid="nav-all"
+          className={cx('nav-item', { 'is-selected': tag === 'all' })}
+          onClick={() => setTag('all')}
+        >
           Все
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'attack' })} onClick={() => setTag('attack')}>
+        <li
+          data-testid="nav-attack"
+          className={cx('nav-item', { 'is-selected': tag === 'attack' })}
+          onClick={() => setTag('attack')}
+        >
           Атака
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'defense' })} onClick={() => setTag('defense')}>
+        <li
+          data-testid="nav-defense"
+          className={cx('nav-item', { 'is-selected': tag === 'defense' })}
+          onClick={() => setTag('defense')}
+        >
           Защита
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'support' })} onClick={() => setTag('support')}>
+        <li
+          data-testid="nav-support"
+          className={cx('nav-item', { 'is-selected': tag === 'support' })}
+          onClick={() => setTag('support')}
+        >
           Помощь в бою
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'special' })} onClick={() => setTag('special')}>
+        <li
+          data-testid="nav-special"
+          className={cx('nav-item', { 'is-selected': tag === 'special' })}
+          onClick={() => setTag('special')}
+        >
           Особый
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'stats' })} onClick={() => setTag('stats')}>
+        <li
+          data-testid="nav-stats"
+          className={cx('nav-item', { 'is-selected': tag === 'stats' })}
+          onClick={() => setTag('stats')}
+        >
           Характеристики
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'utility' })} onClick={() => setTag('utility')}>
+        <li
+          data-testid="nav-utility"
+          className={cx('nav-item', { 'is-selected': tag === 'utility' })}
+          onClick={() => setTag('utility')}
+        >
           Удобство
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'event' })} onClick={() => setTag('event')}>
+        <li
+          data-testid="nav-event"
+          className={cx('nav-item', { 'is-selected': tag === 'event' })}
+          onClick={() => setTag('event')}
+        >
           Ивент
         </li>
       </ul>
@@ -130,7 +162,7 @@ function App() {
           </thead>
           <tbody>
             {collections.map((collection) => (
-              <tr key={collection.name} className={cx('collection')}>
+              <tr data-testid="collection" key={collection.name} className={cx('collection')}>
                 <td className={cx('collection-name')}>{collection.name}</td>
                 <td className={cx('collection-items')}>
                   <CollectionItemsUi collection={collection} />
