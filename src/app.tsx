@@ -1,77 +1,26 @@
 import classNames from 'classnames/bind';
-import fuzzysort from 'fuzzysort';
 import type { DebouncedFunc } from 'lodash';
 import debounce from 'lodash/debounce';
-import uniq from 'lodash/uniq';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { Collection, CollectionItem, EnchantedItem, Item, Tag } from '../types';
+import type { Collection, CollectionItem, EnchantedItem } from '../types';
 import styles from './app.module.scss';
 import { Navigation } from './components/navigation/navigation';
+import { itemsMap } from './constants/items-map';
 import { searchParamsConfig } from './constants/search-params-config';
-import collectionsJSON from './data/collections.json';
 import imagesJSON from './data/images.json';
-import itemsJSON from './data/items.json';
-import tagsJSON from './data/tags.json';
 import { useAppSearchParams } from './hooks/use-app-search-params';
-
-const itemsMap = new Map<number, Item>(itemsJSON.map((item) => [item.id, item]));
-const tagsMap = new Map<Tag, Set<string>>(
-  Object.entries(tagsJSON).map(([tag, collectionNames]) => [tag as Tag, new Set(collectionNames)]),
-);
+import { useCollections } from './hooks/use-collections';
 
 const cx = classNames.bind(styles);
 
-interface PreparedCollectionResult {
-  prepared: Fuzzysort.Prepared;
-  collection: Collection;
-}
-
-function prepare(collections: Array<Collection>, items: Map<number, Item>): Array<PreparedCollectionResult> {
-  const result: Array<PreparedCollectionResult> = [];
-
-  for (const collection of collections) {
-    result.push({ prepared: fuzzysort.prepare(collection.name), collection });
-    result.push({ prepared: fuzzysort.prepare(collection.effects), collection });
-
-    for (const collectionItem of collection.items) {
-      // only first item for now
-      const singleItem = Array.isArray(collectionItem) ? collectionItem[0] : collectionItem;
-      const item = items.get(singleItem.id);
-
-      if (!item) {
-        continue;
-      }
-
-      result.push({ prepared: fuzzysort.prepare(item.name), collection });
-    }
-  }
-
-  return result;
-}
-
-const searchItems = prepare(collectionsJSON, itemsMap);
-
 function App() {
   const {
-    searchParams: { tab, query },
+    searchParams: { query },
     setSearchParams,
   } = useAppSearchParams(searchParamsConfig);
   const debouncedRef = useRef<null | DebouncedFunc<(q: string) => void>>(null);
   const [filterText, setFilterText] = useState(query);
-  const filteredCollections: Array<Collection> = useMemo(
-    () =>
-      query
-        ? uniq(fuzzysort.go(query, searchItems, { key: 'prepared', threshold: -1000 }).map((r) => r.obj.collection))
-        : collectionsJSON,
-    [query],
-  );
-  const collections = useMemo(
-    () =>
-      tab === 'all'
-        ? filteredCollections
-        : filteredCollections.filter((collection) => tagsMap.get(tab)?.has(collection.name)),
-    [tab, filteredCollections],
-  );
+  const collections = useCollections();
 
   debouncedRef.current = useMemo(() => {
     if (debouncedRef.current) {
