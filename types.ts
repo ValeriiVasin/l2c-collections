@@ -20,3 +20,5 @@ export interface Collection {
 
 export type Tag = 'attack' | 'defense' | 'support' | 'special' | 'stats' | 'utility' | 'event';
 export type TaggedCollections = Record<Tag, Array<string>>;
+
+export type Tab = Tag | 'all';

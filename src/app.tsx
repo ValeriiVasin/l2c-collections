@@ -4,9 +4,10 @@ import type { DebouncedFunc } from 'lodash';
 import debounce from 'lodash/debounce';
 import uniq from 'lodash/uniq';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import type { Collection, CollectionItem, EnchantedItem, Item, Tag } from '../types';
 import styles from './app.module.scss';
+import { Navigation } from './components/navigation/navigation';
+import { searchParamsConfig } from './constants/search-params-config';
 import collectionsJSON from './data/collections.json';
 import imagesJSON from './data/images.json';
 import itemsJSON from './data/items.json';
@@ -50,14 +51,11 @@ function prepare(collections: Array<Collection>, items: Map<number, Item>): Arra
 
 const searchItems = prepare(collectionsJSON, itemsMap);
 
-type TagsWithAll = Tag | 'all';
-
 function App() {
   const {
     searchParams: { tab, query },
     setSearchParams,
-    url,
-  } = useAppSearchParams<{ tab: TagsWithAll; query: string }>({ tab: 'all', query: '' });
+  } = useAppSearchParams(searchParamsConfig);
   const debouncedRef = useRef<null | DebouncedFunc<(q: string) => void>>(null);
   const [filterText, setFilterText] = useState(query);
   const filteredCollections: Array<Collection> = useMemo(
@@ -98,80 +96,7 @@ function App() {
           onChange={({ currentTarget }) => setFilterText(currentTarget.value)}
         />
       </div>
-      <ul className={cx('nav')} data-testid="navigation">
-        <li>
-          <Link
-            data-testid="nav-all"
-            className={cx('nav-link', { 'is-selected': tab === 'all' })}
-            to={url('/', { tab: 'all' })}
-          >
-            Все
-          </Link>
-        </li>
-        <li>
-          <Link
-            data-testid="nav-attack"
-            className={cx('nav-link', { 'is-selected': tab === 'attack' })}
-            to={url('/', { tab: 'attack' })}
-          >
-            Атака
-          </Link>
-        </li>
-        <li>
-          <Link
-            data-testid="nav-defense"
-            className={cx('nav-link', { 'is-selected': tab === 'defense' })}
-            to={url('/', { tab: 'defense' })}
-          >
-            Защита
-          </Link>
-        </li>
-        <li>
-          <Link
-            data-testid="nav-support"
-            className={cx('nav-link', { 'is-selected': tab === 'support' })}
-            to={url('/', { tab: 'support' })}
-          >
-            Помощь в бою
-          </Link>
-        </li>
-        <li>
-          <Link
-            data-testid="nav-special"
-            className={cx('nav-link', { 'is-selected': tab === 'special' })}
-            to={url('/', { tab: 'special' })}
-          >
-            Особый
-          </Link>
-        </li>
-        <li>
-          <Link
-            data-testid="nav-stats"
-            className={cx('nav-link', { 'is-selected': tab === 'stats' })}
-            to={url('/', { tab: 'stats' })}
-          >
-            Характеристики
-          </Link>
-        </li>
-        <li>
-          <Link
-            data-testid="nav-utility"
-            className={cx('nav-link', { 'is-selected': tab === 'utility' })}
-            to={url('/', { tab: 'utility' })}
-          >
-            Удобство
-          </Link>
-        </li>
-        <li>
-          <Link
-            data-testid="nav-event"
-            className={cx('nav-link', { 'is-selected': tab === 'event' })}
-            to={url('/', { tab: 'event' })}
-          >
-            Ивент
-          </Link>
-        </li>
-      </ul>
+      <Navigation />
       {collections.length === 0 && (
         <div data-testid="notification" className={cx('notification', 'warning')}>
           Ничего не найдено

@@ -15,28 +15,6 @@
   border-radius: 8px;
 }
 
-.nav {
-  display: flex;
-  justify-content: center;
-  margin: 32px;
-}
-
-.nav-link {
-  display: inline-block;
-  padding: 0 16px;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &.is-selected {
-    cursor: default;
-    pointer-events: none;
-    text-decoration: underline;
-  }
-}
-
 .table {
   width: 100%
 }
