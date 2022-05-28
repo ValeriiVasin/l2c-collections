@@ -1,5 +1,9 @@
 import classNames from 'classnames/bind';
-import { useState } from 'react';
+import fuzzysort from 'fuzzysort';
+import type { DebouncedFunc } from 'lodash';
+import debounce from 'lodash/debounce';
+import uniq from 'lodash/uniq';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Collection, CollectionItem, EnchantedItem, Item, Tag } from '../types';
 import styles from './app.module.scss';
 import collectionsJSON from './data/collections.json';
@@ -14,17 +18,79 @@ const tagsMap = new Map<Tag, Set<string>>(
 
 const cx = classNames.bind(styles);
 
+interface PreparedCollectionResult {
+  prepared: Fuzzysort.Prepared;
+  collection: Collection;
+}
+
+function prepare(collections: Array<Collection>, items: Map<number, Item>): Array<PreparedCollectionResult> {
+  const result: Array<PreparedCollectionResult> = [];
+
+  for (const collection of collections) {
+    result.push({ prepared: fuzzysort.prepare(collection.name), collection });
+    result.push({ prepared: fuzzysort.prepare(collection.effects), collection });
+
+    for (const collectionItem of collection.items) {
+      // only first item for now
+      const singleItem = Array.isArray(collectionItem) ? collectionItem[0] : collectionItem;
+      const item = items.get(singleItem.id);
+
+      if (!item) {
+        continue;
+      }
+
+      result.push({ prepared: fuzzysort.prepare(item.name), collection });
+    }
+  }
+
+  return result;
+}
+
+const searchItems = prepare(collectionsJSON, itemsMap);
+
 type TagsWithAll = Tag | 'all';
 
 function App() {
+  const debouncedRef = useRef<null | DebouncedFunc<(q: string) => void>>(null);
+  const [query, setQuery] = useState('');
+  const [filter, setFilter] = useState('');
   const [tag, setTag] = useState<TagsWithAll>('all');
-  const collections =
-    tag === 'all' ? collectionsJSON : collectionsJSON.filter((collection) => tagsMap.get(tag)?.has(collection.name));
+  const filteredCollections: Array<Collection> = useMemo(
+    () =>
+      filter
+        ? uniq(fuzzysort.go(filter, searchItems, { key: 'prepared', threshold: -1000 }).map((r) => r.obj.collection))
+        : collectionsJSON,
+    [filter],
+  );
+  const collections = useMemo(
+    () =>
+      tag === 'all'
+        ? filteredCollections
+        : filteredCollections.filter((collection) => tagsMap.get(tag)?.has(collection.name)),
+    [tag, filteredCollections],
+  );
+
+  debouncedRef.current = useMemo(() => {
+    if (debouncedRef.current) {
+      debouncedRef.current.cancel();
+    }
+
+    return debounce(setFilter, 1000);
+  }, [setFilter]);
+
+  useEffect(() => {
+    debouncedRef.current?.(query);
+  }, [query]);
 
   return (
     <div className={cx('content')}>
       <div className={cx('filter')}>
-        <input type="search" className={cx('filter-input')} />
+        <input
+          type="search"
+          className={cx('filter-input')}
+          value={query}
+          onChange={({ currentTarget }) => setQuery(currentTarget.value)}
+        />
       </div>
       <ul className={cx('nav')}>
         <li className={cx('nav-item', { 'is-selected': tag === 'all' })} onClick={() => setTag('all')}>
@@ -52,26 +118,29 @@ function App() {
           Ивент
         </li>
       </ul>
-      <table className={cx('table')}>
-        <thead>
-          <tr>
-            <td>Название</td>
-            <td>Предметы</td>
-            <td>Эффект коллекции</td>
-          </tr>
-        </thead>
-        <tbody>
-          {collections.map((collection) => (
-            <tr key={collection.name} className={cx('collection')}>
-              <td className={cx('collection-name')}>{collection.name}</td>
-              <td className={cx('collection-items')}>
-                <CollectionItemsUi collection={collection} />
-              </td>
-              <td className={cx('collection-effect')}>{collection.effects}</td>
+      {collections.length === 0 && <div className={cx('notification', 'warning')}>Ничего не найдено</div>}
+      {collections.length > 0 && (
+        <table className={cx('table')}>
+          <thead>
+            <tr>
+              <td>Название</td>
+              <td>Предметы</td>
+              <td>Эффект коллекции</td>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {collections.map((collection) => (
+              <tr key={collection.name} className={cx('collection')}>
+                <td className={cx('collection-name')}>{collection.name}</td>
+                <td className={cx('collection-items')}>
+                  <CollectionItemsUi collection={collection} />
+                </td>
+                <td className={cx('collection-effect')}>{collection.effects}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }

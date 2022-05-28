@@ -114,3 +114,13 @@ $image-size: 64px;
   align-items: center;
   border-radius: 50%;
 }
+
+// notifications
+.notification {
+  padding: 20px;
+  border-radius: 4px;
+
+  &.warning {
+    background-color: orange;
+  }
+}
