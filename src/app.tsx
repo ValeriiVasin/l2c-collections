@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import fuzzysort from 'fuzzysort';
 import type { DebouncedFunc } from 'lodash';
 import debounce from 'lodash/debounce';
+import uniq from 'lodash/uniq';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Collection, CollectionItem, EnchantedItem, Item, Tag } from '../types';
 import styles from './app.module.scss';
@@ -17,6 +18,36 @@ const tagsMap = new Map<Tag, Set<string>>(
 
 const cx = classNames.bind(styles);
 
+interface PreparedCollectionResult {
+  prepared: Fuzzysort.Prepared;
+  collection: Collection;
+}
+
+function prepare(collections: Array<Collection>, items: Map<number, Item>): Array<PreparedCollectionResult> {
+  const result: Array<PreparedCollectionResult> = [];
+
+  for (const collection of collections) {
+    result.push({ prepared: fuzzysort.prepare(collection.name), collection });
+    result.push({ prepared: fuzzysort.prepare(collection.effects), collection });
+
+    for (const collectionItem of collection.items) {
+      // only first item for now
+      const singleItem = Array.isArray(collectionItem) ? collectionItem[0] : collectionItem;
+      const item = items.get(singleItem.id);
+
+      if (!item) {
+        continue;
+      }
+
+      result.push({ prepared: fuzzysort.prepare(item.name), collection });
+    }
+  }
+
+  return result;
+}
+
+const searchItems = prepare(collectionsJSON, itemsMap);
+
 type TagsWithAll = Tag | 'all';
 
 function App() {
@@ -24,19 +55,19 @@ function App() {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState('');
   const [tag, setTag] = useState<TagsWithAll>('all');
-  const taggedCollections = useMemo(
+  const filteredCollections: Array<Collection> = useMemo(
     () =>
-      tag === 'all' ? collectionsJSON : collectionsJSON.filter((collection) => tagsMap.get(tag)?.has(collection.name)),
-    [tag],
+      filter
+        ? uniq(fuzzysort.go(filter, searchItems, { key: 'prepared', threshold: -1000 }).map((r) => r.obj.collection))
+        : collectionsJSON,
+    [filter],
   );
   const collections = useMemo(
     () =>
-      filter
-        ? fuzzysort
-            .go(filter, taggedCollections, { keys: ['name', 'effects'], threshold: -1000 })
-            .map((result) => result.obj)
-        : taggedCollections,
-    [taggedCollections, filter],
+      tag === 'all'
+        ? filteredCollections
+        : filteredCollections.filter((collection) => tagsMap.get(tag)?.has(collection.name)),
+    [tag, filteredCollections],
   );
 
   debouncedRef.current = useMemo(() => {
