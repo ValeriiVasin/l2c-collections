@@ -24,7 +24,7 @@ function App() {
   const [tag, setTag] = useState<TagsWithAll>('all');
   const taggedCollections =
     tag === 'all' ? collectionsJSON : collectionsJSON.filter((collection) => tagsMap.get(tag)?.has(collection.name));
-  const fuse = new Fuse(taggedCollections, { keys: ['name', 'effects'], ignoreLocation: true, threshold: 0.6 });
+  const fuse = new Fuse(taggedCollections, { keys: ['name', 'effects'], ignoreLocation: true, threshold: 0.3 });
   const collections = filter ? fuse.search(filter).map((result) => result.item) : taggedCollections;
   const debouncedSetFilter = debounce(setFilter, 1000);
 
@@ -68,26 +68,29 @@ function App() {
           Ивент
         </li>
       </ul>
-      <table className={cx('table')}>
-        <thead>
-          <tr>
-            <td>Название</td>
-            <td>Предметы</td>
-            <td>Эффект коллекции</td>
-          </tr>
-        </thead>
-        <tbody>
-          {collections.map((collection) => (
-            <tr key={collection.name} className={cx('collection')}>
-              <td className={cx('collection-name')}>{collection.name}</td>
-              <td className={cx('collection-items')}>
-                <CollectionItemsUi collection={collection} />
-              </td>
-              <td className={cx('collection-effect')}>{collection.effects}</td>
+      {collections.length === 0 && <div className={cx('notification', 'warning')}>Ничего не найдено</div>}
+      {collections.length > 0 && (
+        <table className={cx('table')}>
+          <thead>
+            <tr>
+              <td>Название</td>
+              <td>Предметы</td>
+              <td>Эффект коллекции</td>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {collections.map((collection) => (
+              <tr key={collection.name} className={cx('collection')}>
+                <td className={cx('collection-name')}>{collection.name}</td>
+                <td className={cx('collection-items')}>
+                  <CollectionItemsUi collection={collection} />
+                </td>
+                <td className={cx('collection-effect')}>{collection.effects}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
