@@ -4,12 +4,14 @@ import type { DebouncedFunc } from 'lodash';
 import debounce from 'lodash/debounce';
 import uniq from 'lodash/uniq';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import type { Collection, CollectionItem, EnchantedItem, Item, Tag } from '../types';
 import styles from './app.module.scss';
 import collectionsJSON from './data/collections.json';
 import imagesJSON from './data/images.json';
 import itemsJSON from './data/items.json';
 import tagsJSON from './data/tags.json';
+import { useAppSearchParams } from './hooks/use-app-search-params';
 
 const itemsMap = new Map<number, Item>(itemsJSON.map((item) => [item.id, item]));
 const tagsMap = new Map<Tag, Set<string>>(
@@ -51,23 +53,26 @@ const searchItems = prepare(collectionsJSON, itemsMap);
 type TagsWithAll = Tag | 'all';
 
 function App() {
+  const {
+    searchParams: { tab, query },
+    setSearchParams,
+    url,
+  } = useAppSearchParams<{ tab: TagsWithAll; query: string }>({ tab: 'all', query: '' });
   const debouncedRef = useRef<null | DebouncedFunc<(q: string) => void>>(null);
-  const [query, setQuery] = useState('');
-  const [filter, setFilter] = useState('');
-  const [tag, setTag] = useState<TagsWithAll>('all');
+  const [filterText, setFilterText] = useState(query);
   const filteredCollections: Array<Collection> = useMemo(
     () =>
-      filter
-        ? uniq(fuzzysort.go(filter, searchItems, { key: 'prepared', threshold: -1000 }).map((r) => r.obj.collection))
+      query
+        ? uniq(fuzzysort.go(query, searchItems, { key: 'prepared', threshold: -1000 }).map((r) => r.obj.collection))
         : collectionsJSON,
-    [filter],
+    [query],
   );
   const collections = useMemo(
     () =>
-      tag === 'all'
+      tab === 'all'
         ? filteredCollections
-        : filteredCollections.filter((collection) => tagsMap.get(tag)?.has(collection.name)),
-    [tag, filteredCollections],
+        : filteredCollections.filter((collection) => tagsMap.get(tab)?.has(collection.name)),
+    [tab, filteredCollections],
   );
 
   debouncedRef.current = useMemo(() => {
@@ -75,12 +80,12 @@ function App() {
       debouncedRef.current.cancel();
     }
 
-    return debounce(setFilter, 1000);
-  }, [setFilter]);
+    return debounce((query: string) => setSearchParams({ query }), 500);
+  }, [setSearchParams]);
 
   useEffect(() => {
-    debouncedRef.current?.(query);
-  }, [query]);
+    debouncedRef.current?.(filterText);
+  }, [filterText]);
 
   return (
     <div className={cx('content')}>
@@ -88,37 +93,90 @@ function App() {
         <input
           type="search"
           className={cx('filter-input')}
-          value={query}
-          onChange={({ currentTarget }) => setQuery(currentTarget.value)}
+          value={filterText}
+          data-testid="filter"
+          onChange={({ currentTarget }) => setFilterText(currentTarget.value)}
         />
       </div>
-      <ul className={cx('nav')}>
-        <li className={cx('nav-item', { 'is-selected': tag === 'all' })} onClick={() => setTag('all')}>
-          Все
+      <ul className={cx('nav')} data-testid="navigation">
+        <li>
+          <Link
+            data-testid="nav-all"
+            className={cx('nav-link', { 'is-selected': tab === 'all' })}
+            to={url('/', { tab: 'all' })}
+          >
+            Все
+          </Link>
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'attack' })} onClick={() => setTag('attack')}>
-          Атака
+        <li>
+          <Link
+            data-testid="nav-attack"
+            className={cx('nav-link', { 'is-selected': tab === 'attack' })}
+            to={url('/', { tab: 'attack' })}
+          >
+            Атака
+          </Link>
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'defense' })} onClick={() => setTag('defense')}>
-          Защита
+        <li>
+          <Link
+            data-testid="nav-defense"
+            className={cx('nav-link', { 'is-selected': tab === 'defense' })}
+            to={url('/', { tab: 'defense' })}
+          >
+            Защита
+          </Link>
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'support' })} onClick={() => setTag('support')}>
-          Помощь в бою
+        <li>
+          <Link
+            data-testid="nav-support"
+            className={cx('nav-link', { 'is-selected': tab === 'support' })}
+            to={url('/', { tab: 'support' })}
+          >
+            Помощь в бою
+          </Link>
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'special' })} onClick={() => setTag('special')}>
-          Особый
+        <li>
+          <Link
+            data-testid="nav-special"
+            className={cx('nav-link', { 'is-selected': tab === 'special' })}
+            to={url('/', { tab: 'special' })}
+          >
+            Особый
+          </Link>
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'stats' })} onClick={() => setTag('stats')}>
-          Характеристики
+        <li>
+          <Link
+            data-testid="nav-stats"
+            className={cx('nav-link', { 'is-selected': tab === 'stats' })}
+            to={url('/', { tab: 'stats' })}
+          >
+            Характеристики
+          </Link>
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'utility' })} onClick={() => setTag('utility')}>
-          Удобство
+        <li>
+          <Link
+            data-testid="nav-utility"
+            className={cx('nav-link', { 'is-selected': tab === 'utility' })}
+            to={url('/', { tab: 'utility' })}
+          >
+            Удобство
+          </Link>
         </li>
-        <li className={cx('nav-item', { 'is-selected': tag === 'event' })} onClick={() => setTag('event')}>
-          Ивент
+        <li>
+          <Link
+            data-testid="nav-event"
+            className={cx('nav-link', { 'is-selected': tab === 'event' })}
+            to={url('/', { tab: 'event' })}
+          >
+            Ивент
+          </Link>
         </li>
       </ul>
-      {collections.length === 0 && <div className={cx('notification', 'warning')}>Ничего не найдено</div>}
+      {collections.length === 0 && (
+        <div data-testid="notification" className={cx('notification', 'warning')}>
+          Ничего не найдено
+        </div>
+      )}
       {collections.length > 0 && (
         <table className={cx('table')}>
           <thead>
@@ -130,7 +188,7 @@ function App() {
           </thead>
           <tbody>
             {collections.map((collection) => (
-              <tr key={collection.name} className={cx('collection')}>
+              <tr data-testid="collection" key={collection.name} className={cx('collection')}>
                 <td className={cx('collection-name')}>{collection.name}</td>
                 <td className={cx('collection-items')}>
                   <CollectionItemsUi collection={collection} />
