@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import Fuse from 'fuse.js';
+import fuzzysort from 'fuzzysort';
 import type { DebouncedFunc } from 'lodash';
 import debounce from 'lodash/debounce';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -29,13 +29,14 @@ function App() {
       tag === 'all' ? collectionsJSON : collectionsJSON.filter((collection) => tagsMap.get(tag)?.has(collection.name)),
     [tag],
   );
-  const fuse = useMemo(
-    () => new Fuse(taggedCollections, { keys: ['name', 'effects'], ignoreLocation: true, threshold: 0.3 }),
-    [taggedCollections],
-  );
   const collections = useMemo(
-    () => (filter ? fuse.search(filter).map((result) => result.item) : taggedCollections),
-    [taggedCollections, filter, fuse],
+    () =>
+      filter
+        ? fuzzysort
+            .go(filter, taggedCollections, { keys: ['name', 'effects'], threshold: -1000 })
+            .map((result) => result.obj)
+        : taggedCollections,
+    [taggedCollections, filter],
   );
 
   debouncedRef.current = useMemo(() => {
