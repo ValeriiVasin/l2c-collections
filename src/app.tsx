@@ -4,6 +4,7 @@ import type { DebouncedFunc } from 'lodash';
 import debounce from 'lodash/debounce';
 import uniq from 'lodash/uniq';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import type { Collection, CollectionItem, EnchantedItem, Item, Tag } from '../types';
 import styles from './app.module.scss';
 import collectionsJSON from './data/collections.json';
@@ -55,6 +56,7 @@ function App() {
   const {
     searchParams: { tab },
     setSearchParams,
+    url,
   } = useAppSearchParams<{ tab: TagsWithAll }>({ tab: 'all' });
   const debouncedRef = useRef<null | DebouncedFunc<(q: string) => void>>(null);
   const [query, setQuery] = useState('');
@@ -97,61 +99,77 @@ function App() {
         />
       </div>
       <ul className={cx('nav')} data-testid="navigation">
-        <li
-          data-testid="nav-all"
-          className={cx('nav-item', { 'is-selected': tab === 'all' })}
-          onClick={() => setSearchParams({ tab: 'all' })}
-        >
-          Все
+        <li>
+          <Link
+            data-testid="nav-all"
+            className={cx('nav-link', { 'is-selected': tab === 'all' })}
+            to={url('/', { tab: 'all' })}
+          >
+            Все
+          </Link>
         </li>
-        <li
-          data-testid="nav-attack"
-          className={cx('nav-item', { 'is-selected': tab === 'attack' })}
-          onClick={() => setSearchParams({ tab: 'attack' })}
-        >
-          Атака
+        <li>
+          <Link
+            data-testid="nav-attack"
+            className={cx('nav-link', { 'is-selected': tab === 'attack' })}
+            to={url('/', { tab: 'attack' })}
+          >
+            Атака
+          </Link>
         </li>
-        <li
-          data-testid="nav-defense"
-          className={cx('nav-item', { 'is-selected': tab === 'defense' })}
-          onClick={() => setSearchParams({ tab: 'defense' })}
-        >
-          Защита
+        <li>
+          <Link
+            data-testid="nav-defense"
+            className={cx('nav-link', { 'is-selected': tab === 'defense' })}
+            to={url('/', { tab: 'defense' })}
+          >
+            Защита
+          </Link>
         </li>
-        <li
-          data-testid="nav-support"
-          className={cx('nav-item', { 'is-selected': tab === 'support' })}
-          onClick={() => setSearchParams({ tab: 'support' })}
-        >
-          Помощь в бою
+        <li>
+          <Link
+            data-testid="nav-support"
+            className={cx('nav-link', { 'is-selected': tab === 'support' })}
+            to={url('/', { tab: 'support' })}
+          >
+            Помощь в бою
+          </Link>
         </li>
-        <li
-          data-testid="nav-special"
-          className={cx('nav-item', { 'is-selected': tab === 'special' })}
-          onClick={() => setSearchParams({ tab: 'special' })}
-        >
-          Особый
+        <li>
+          <Link
+            data-testid="nav-special"
+            className={cx('nav-link', { 'is-selected': tab === 'special' })}
+            to={url('/', { tab: 'special' })}
+          >
+            Особый
+          </Link>
         </li>
-        <li
-          data-testid="nav-stats"
-          className={cx('nav-item', { 'is-selected': tab === 'stats' })}
-          onClick={() => setSearchParams({ tab: 'stats' })}
-        >
-          Характеристики
+        <li>
+          <Link
+            data-testid="nav-stats"
+            className={cx('nav-link', { 'is-selected': tab === 'stats' })}
+            to={url('/', { tab: 'stats' })}
+          >
+            Характеристики
+          </Link>
         </li>
-        <li
-          data-testid="nav-utility"
-          className={cx('nav-item', { 'is-selected': tab === 'utility' })}
-          onClick={() => setSearchParams({ tab: 'utility' })}
-        >
-          Удобство
+        <li>
+          <Link
+            data-testid="nav-utility"
+            className={cx('nav-link', { 'is-selected': tab === 'utility' })}
+            to={url('/', { tab: 'utility' })}
+          >
+            Удобство
+          </Link>
         </li>
-        <li
-          data-testid="nav-event"
-          className={cx('nav-item', { 'is-selected': tab === 'event' })}
-          onClick={() => setSearchParams({ tab: 'event' })}
-        >
-          Ивент
+        <li>
+          <Link
+            data-testid="nav-event"
+            className={cx('nav-link', { 'is-selected': tab === 'event' })}
+            to={url('/', { tab: 'event' })}
+          >
+            Ивент
+          </Link>
         </li>
       </ul>
       {collections.length === 0 && <div className={cx('notification', 'warning')}>Ничего не найдено</div>}
