@@ -5,6 +5,7 @@ const selectors = {
   navItemAttack: `${testId('nav-attack')}`,
   collection: testId('collection'),
   filter: testId('filter'),
+  notification: testId('notification'),
 };
 
 describe('navigation', () => {
@@ -52,8 +53,8 @@ describe('navigation', () => {
     });
 
     it('preserves selected tab with the text', () => {
-      cy.get(selectors.filter).type('Клана');
       cy.get(selectors.navItemAttack).click();
+      cy.get(selectors.filter).type('Клана');
       cy.url()
         .should('contain', `query=${encodeURI('Клана')}`)
         .should('contain', 'tab=attack');
@@ -65,6 +66,11 @@ describe('navigation', () => {
       cy.get(selectors.collection)
         .should('not.contain', 'Коллекционер костей')
         .should('contain', 'Храбрость ветеранов клана');
+    });
+
+    it('filter nothing', () => {
+      cy.get(selectors.filter).type('whatever');
+      cy.get(selectors.notification).should('contain', 'Ничего не найдено');
     });
   });
 });

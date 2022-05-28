@@ -59,13 +59,13 @@ function App() {
     url,
   } = useAppSearchParams<{ tab: TagsWithAll; query: string }>({ tab: 'all', query: '' });
   const debouncedRef = useRef<null | DebouncedFunc<(q: string) => void>>(null);
-  const [filter, setFilter] = useState(query);
+  const [filterText, setFilterText] = useState(query);
   const filteredCollections: Array<Collection> = useMemo(
     () =>
-      filter
-        ? uniq(fuzzysort.go(filter, searchItems, { key: 'prepared', threshold: -1000 }).map((r) => r.obj.collection))
+      query
+        ? uniq(fuzzysort.go(query, searchItems, { key: 'prepared', threshold: -1000 }).map((r) => r.obj.collection))
         : collectionsJSON,
-    [filter],
+    [query],
   );
   const collections = useMemo(
     () =>
@@ -80,12 +80,12 @@ function App() {
       debouncedRef.current.cancel();
     }
 
-    return debounce(setFilter, 500);
-  }, [setFilter]);
+    return debounce((query: string) => setSearchParams({ query }), 500);
+  }, [setSearchParams]);
 
   useEffect(() => {
-    debouncedRef.current?.(query);
-  }, [query]);
+    debouncedRef.current?.(filterText);
+  }, [filterText]);
 
   return (
     <div className={cx('content')}>
@@ -93,9 +93,9 @@ function App() {
         <input
           type="search"
           className={cx('filter-input')}
-          value={query}
+          value={filterText}
           data-testid="filter"
-          onChange={({ currentTarget }) => setSearchParams({ query: currentTarget.value })}
+          onChange={({ currentTarget }) => setFilterText(currentTarget.value)}
         />
       </div>
       <ul className={cx('nav')} data-testid="navigation">
@@ -172,7 +172,11 @@ function App() {
           </Link>
         </li>
       </ul>
-      {collections.length === 0 && <div className={cx('notification', 'warning')}>Ничего не найдено</div>}
+      {collections.length === 0 && (
+        <div data-testid="notification" className={cx('notification', 'warning')}>
+          Ничего не найдено
+        </div>
+      )}
       {collections.length > 0 && (
         <table className={cx('table')}>
           <thead>
