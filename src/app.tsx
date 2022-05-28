@@ -1,7 +1,8 @@
 import classNames from 'classnames/bind';
 import Fuse from 'fuse.js';
+import type { DebouncedFunc } from 'lodash';
 import debounce from 'lodash/debounce';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Collection, CollectionItem, EnchantedItem, Item, Tag } from '../types';
 import styles from './app.module.scss';
 import collectionsJSON from './data/collections.json';
@@ -19,18 +20,35 @@ const cx = classNames.bind(styles);
 type TagsWithAll = Tag | 'all';
 
 function App() {
+  const debouncedRef = useRef<null | DebouncedFunc<(q: string) => void>>(null);
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState('');
   const [tag, setTag] = useState<TagsWithAll>('all');
-  const taggedCollections =
-    tag === 'all' ? collectionsJSON : collectionsJSON.filter((collection) => tagsMap.get(tag)?.has(collection.name));
-  const fuse = new Fuse(taggedCollections, { keys: ['name', 'effects'], ignoreLocation: true, threshold: 0.3 });
-  const collections = filter ? fuse.search(filter).map((result) => result.item) : taggedCollections;
-  const debouncedSetFilter = debounce(setFilter, 1000);
+  const taggedCollections = useMemo(
+    () =>
+      tag === 'all' ? collectionsJSON : collectionsJSON.filter((collection) => tagsMap.get(tag)?.has(collection.name)),
+    [tag],
+  );
+  const fuse = useMemo(
+    () => new Fuse(taggedCollections, { keys: ['name', 'effects'], ignoreLocation: true, threshold: 0.3 }),
+    [taggedCollections],
+  );
+  const collections = useMemo(
+    () => (filter ? fuse.search(filter).map((result) => result.item) : taggedCollections),
+    [taggedCollections, filter, fuse],
+  );
+
+  debouncedRef.current = useMemo(() => {
+    if (debouncedRef.current) {
+      debouncedRef.current.cancel();
+    }
+
+    return debounce(setFilter, 1000);
+  }, [setFilter]);
 
   useEffect(() => {
-    debouncedSetFilter(query);
-  }, [debouncedSetFilter, query]);
+    debouncedRef.current?.(query);
+  }, [query]);
 
   return (
     <div className={cx('content')}>
