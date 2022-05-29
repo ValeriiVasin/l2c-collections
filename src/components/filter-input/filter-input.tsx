@@ -1,11 +1,16 @@
 import classNames from 'classnames/bind';
 import type { DebouncedFunc } from 'lodash';
 import debounce from 'lodash/debounce';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './filter-input.module.scss';
 const cx = classNames.bind(styles);
 
-export function FilterInput({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+interface FilterInputProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export const FilterInput = forwardRef<HTMLInputElement, FilterInputProps>(({ value, onChange }, inputRef) => {
   const debouncedRef = useRef<null | DebouncedFunc<(q: string) => void>>(null);
   const [filterText, setFilterText] = useState(value);
 
@@ -23,6 +28,7 @@ export function FilterInput({ value, onChange }: { value: string; onChange: (val
 
   return (
     <input
+      ref={inputRef}
       type="search"
       className={cx('filter-input')}
       value={filterText}
@@ -30,4 +36,4 @@ export function FilterInput({ value, onChange }: { value: string; onChange: (val
       onChange={({ currentTarget }) => setFilterText(currentTarget.value)}
     />
   );
-}
+});
