@@ -1,9 +1,7 @@
 import classNames from 'classnames/bind';
-import type { DebouncedFunc } from 'lodash';
-import debounce from 'lodash/debounce';
-import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Collection, CollectionItem, EnchantedItem } from '../types';
 import styles from './app.module.scss';
+import { FilterInput } from './components/filter-input/filter-input';
 import { Navigation } from './components/navigation/navigation';
 import { itemsMap } from './constants/items-map';
 import { searchParamsConfig } from './constants/search-params-config';
@@ -18,32 +16,13 @@ function App() {
     searchParams: { query },
     setSearchParams,
   } = useAppSearchParams(searchParamsConfig);
-  const debouncedRef = useRef<null | DebouncedFunc<(q: string) => void>>(null);
-  const [filterText, setFilterText] = useState(query);
+
   const collections = useCollections();
-
-  debouncedRef.current = useMemo(() => {
-    if (debouncedRef.current) {
-      debouncedRef.current.cancel();
-    }
-
-    return debounce((query: string) => setSearchParams({ query }), 500);
-  }, [setSearchParams]);
-
-  useEffect(() => {
-    debouncedRef.current?.(filterText);
-  }, [filterText]);
 
   return (
     <div className={cx('content')}>
       <div className={cx('filter')}>
-        <input
-          type="search"
-          className={cx('filter-input')}
-          value={filterText}
-          data-testid="filter"
-          onChange={({ currentTarget }) => setFilterText(currentTarget.value)}
-        />
+        <FilterInput value={query} onChange={(query) => setSearchParams({ query })} />
       </div>
       <Navigation />
       {collections.length === 0 && (
