@@ -1,3 +1,11 @@
+.header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  padding: 16px 0;
+  z-index: 100;
+}
+
 .content {
   width: 960px;
   margin: 0 auto;
@@ -5,9 +13,9 @@
 
 .filter {
   display: flex;
-  margin: 32px 0 16px;
+  margin-bottom: 16px;
 }
 
 .navigation {
-  margin: 32px 0;
+  // margin: 32px 0;
 }
