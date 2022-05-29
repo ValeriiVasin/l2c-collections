@@ -13,11 +13,11 @@ const cx = classNames.bind(styles);
 
 function App() {
   const {
-    searchParams: { query },
+    searchParams: { tab, query },
     setSearchParams,
   } = useAppSearchParams(searchParamsConfig);
 
-  const collections = useCollections();
+  const collections = useCollections({ tab, query });
 
   return (
     <div className={cx('content')}>

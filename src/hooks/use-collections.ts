@@ -1,12 +1,10 @@
 import fuzzysort from 'fuzzysort';
 import uniq from 'lodash/uniq';
 import { useMemo } from 'react';
-import type { Collection, Item, Tag } from '../../types';
+import type { Collection, Item, Tab, Tag } from '../../types';
 import { itemsMap } from '../constants/items-map';
-import { searchParamsConfig } from '../constants/search-params-config';
 import collectionsJSON from '../data/collections.json';
 import tagsJSON from '../data/tags.json';
-import { useAppSearchParams } from './use-app-search-params';
 
 const tagsMap = new Map<Tag, Set<string>>(
   Object.entries(tagsJSON).map(([tag, collectionNames]) => [tag as Tag, new Set(collectionNames)]),
@@ -42,11 +40,7 @@ function prepare(collections: Array<Collection>, items: Map<number, Item>): Arra
 
 const searchItems = prepare(collectionsJSON, itemsMap);
 
-export function useCollections(): Array<Collection> {
-  const {
-    searchParams: { tab, query },
-  } = useAppSearchParams(searchParamsConfig);
-
+export function useCollections({ tab, query }: { tab: Tab; query: string }): Array<Collection> {
   const filteredCollections: Array<Collection> = useMemo(
     () =>
       query
