@@ -3,6 +3,7 @@ import type { Collection, CollectionItem, EnchantedItem } from '../types';
 import styles from './app.module.scss';
 import { FilterInput } from './components/filter-input/filter-input';
 import { Navigation } from './components/navigation/navigation';
+import { Notification } from './components/notification/notification';
 import { itemsMap } from './constants/items-map';
 import { searchParamsConfig } from './constants/search-params-config';
 import imagesJSON from './data/images.json';
@@ -25,11 +26,7 @@ function App() {
         <FilterInput value={query} onChange={(query) => setSearchParams({ query })} />
       </div>
       <Navigation />
-      {collections.length === 0 && (
-        <div data-testid="notification" className={cx('notification', 'warning')}>
-          Ничего не найдено
-        </div>
-      )}
+      {collections.length === 0 && <Notification>Ничего не найдено</Notification>}
       {collections.length > 0 && (
         <table className={cx('table')}>
           <thead>
