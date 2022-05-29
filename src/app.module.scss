@@ -7,36 +7,3 @@
   display: flex;
   margin: 32px 0 16px;
 }
-
-.table {
-  width: 100%
-}
-
-.table thead tr td {
-  font-weight: 800;
-}
-
-.collection {
-  &:nth-child(even) {
-    background-color: lightgray;
-  }
-
-  td {
-    padding: 16px 8px;
-    vertical-align:middle;
-  }
-}
-
-.collection-name {
-  max-width: 300px;
-}
-
-.collection-items {}
-
-.collection-effect {
-  max-width: 150px;
-}
-
-.collection-items-wrapper {
-  display: inline-flex;
-}

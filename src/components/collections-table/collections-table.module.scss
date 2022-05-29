@@ -1,0 +1,31 @@
+
+.collections-table {
+  width: 100%
+}
+
+.header-cell {
+  font-weight: 800;
+}
+
+.row {
+  &:nth-child(even) {
+    background-color: lightgray;
+  }
+}
+
+.table-cell {
+  padding: 16px 8px;
+  vertical-align:middle;
+}
+
+.name {
+  max-width: 300px;
+}
+
+.effects {
+  max-width: 150px;
+}
+
+.items-list {
+  display: inline-flex;
+}
