@@ -1,0 +1,46 @@
+.collection-item {
+  position: relative;
+
+  margin-right: 8px;
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+$image-size: 64px;
+.collection-item-image {
+  width: $image-size;
+  height: $image-size;
+}
+
+.collection-item-enchant {
+  &::before {
+    content: '+';
+  }
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: -8px;
+  right: -8px;
+  background: lightgreen;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.collection-item-count {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  bottom: -8px;
+  right: -8px;
+  background-color: lightpink;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
