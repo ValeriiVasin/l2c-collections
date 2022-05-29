@@ -23,7 +23,9 @@ function App() {
       <div className={cx('filter')}>
         <FilterInput value={query} onChange={(query) => setSearchParams({ query })} />
       </div>
-      <Navigation />
+      <div className={cx('navigation')}>
+        <Navigation />
+      </div>
       {collections.length > 0 ? (
         <CollectionsTable collections={collections} />
       ) : (
