@@ -44,7 +44,7 @@ export function useCollections({ tab, query }: { tab: Tab; query: string }): Arr
   const filteredCollections: Array<Collection> = useMemo(
     () =>
       query
-        ? uniq(fuzzysort.go(query, searchItems, { key: 'prepared', threshold: -1000 }).map((r) => r.obj.collection))
+        ? uniq(fuzzysort.go(query, searchItems, { key: 'prepared', threshold: -4000 }).map((r) => r.obj.collection))
         : collectionsJSON,
     [query],
   );
