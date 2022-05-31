@@ -23,6 +23,10 @@ function App() {
     window.scrollTo(0, 0);
   }, [tab]);
 
+  useEffect(() => {
+    document.title = query ? `${query} - L2 Classic Collections` : 'L2 Classic Collections';
+  }, [query]);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   const inputFocusHandler = useCallback((event: KeyboardEvent) => {
