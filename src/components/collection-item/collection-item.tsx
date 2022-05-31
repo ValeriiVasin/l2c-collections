@@ -1,4 +1,6 @@
+import Tippy from '@tippyjs/react';
 import classNames from 'classnames/bind';
+import 'tippy.js/dist/tippy.css'; // optional
 import type { CollectionItem as ICollectionItem, EnchantedItem } from '../../../types';
 import { itemsMap } from '../../constants/items-map';
 import imagesJSON from '../../data/images.json';
@@ -17,16 +19,18 @@ export function CollectionItem({ item }: { item: ICollectionItem }) {
   });
 
   return (
-    <div className={cx('collection-item')} title={title}>
-      {singleItem.enchant && <div className={cx('collection-item-enchant')}>{singleItem.enchant}</div>}
-      {singleItem.count && singleItem.count > 1 && (
-        <div className={cx('collection-item-count')}>{singleItem.count}</div>
-      )}
-      <img
-        className={cx('collection-item-image')}
-        src={`data:image/gif;base64,${base64Image}`}
-        alt={String(singleItem.id)}
-      />
-    </div>
+    <Tippy content={title} maxWidth={500}>
+      <div className={cx('collection-item')}>
+        {singleItem.enchant && <div className={cx('collection-item-enchant')}>{singleItem.enchant}</div>}
+        {singleItem.count && singleItem.count > 1 && (
+          <div className={cx('collection-item-count')}>{singleItem.count}</div>
+        )}
+        <img
+          className={cx('collection-item-image')}
+          src={`data:image/gif;base64,${base64Image}`}
+          alt={String(singleItem.id)}
+        />
+      </div>
+    </Tippy>
   );
 }
