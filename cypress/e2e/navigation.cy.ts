@@ -1,3 +1,4 @@
+import { cy, describe } from 'local-cypress';
 import { testId } from '../helpers/test-id';
 
 const selectors = {
