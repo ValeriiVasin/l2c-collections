@@ -1,3 +1,5 @@
+import { cy, describe } from 'local-cypress';
+
 describe('basic tests', () => {
   beforeEach(() => {
     cy.visit('/');
