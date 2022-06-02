@@ -1,4 +1,4 @@
-import { describe, test } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { parseItemId } from './parse-item-id';
 
 describe('parse item id', () => {

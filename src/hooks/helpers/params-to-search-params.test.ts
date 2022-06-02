@@ -1,4 +1,4 @@
-import { describe } from '@jest/globals';
+import { describe, expect } from '@jest/globals';
 import type { Params } from '../types';
 import { paramsToSearchParams } from './params-to-search-params';
 
