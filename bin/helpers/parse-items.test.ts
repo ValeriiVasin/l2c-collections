@@ -1,4 +1,4 @@
-import { describe, test } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import fs from 'fs';
 import path from 'path';
 import type { Item } from '../../types';
