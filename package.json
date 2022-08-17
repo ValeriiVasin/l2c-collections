@@ -22,7 +22,7 @@
     "@types/image-to-base64": "^2.1.0",
     "@types/jest": "^28.1.7",
     "@types/jsdom": "^16.2.15",
-    "@types/lodash": "^4.14.182",
+    "@types/lodash": "^4.14.183",
     "@types/node": "^18.7.5",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
