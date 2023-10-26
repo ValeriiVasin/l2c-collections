@@ -47,7 +47,7 @@
     "react-router-dom": "^6.17.0",
     "react-scripts": "5.0.1",
     "reset-css": "^5.0.2",
-    "sass": "^1.69.4",
+    "sass": "^1.69.5",
     "serve": "^14.2.1",
     "start-server-and-test": "^1.15.5",
     "ts-jest": "^28.0.8",
