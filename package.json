@@ -31,7 +31,7 @@
     "classnames": "^2.5.1",
     "cypress": "^12.17.4",
     "eslint": "^8.56.0",
-    "eslint-config-prettier": "^8.10.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^4.2.1",
     "fuzzysort": "^2.0.4",
     "husky": "^8.0.3",
